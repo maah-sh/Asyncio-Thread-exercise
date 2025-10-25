@@ -22,12 +22,13 @@ def write_output_file(output_file, queue_obj, reading_end_event):
 async def main(input_file, output_file):
     loop = asyncio.get_running_loop()
     queue_obj = queue.Queue()
-
     event = threading.Event()
 
     with ThreadPoolExecutor(max_workers=2) as pool:
-        await loop.run_in_executor(pool, read_input_file, input_file, queue_obj, event)
-        await loop.run_in_executor(pool, write_output_file, output_file, queue_obj, event)
+        read_task = loop.run_in_executor(pool, read_input_file, input_file, queue_obj, event)
+        write_task =  loop.run_in_executor(pool, write_output_file, output_file, queue_obj, event)
+
+    await asyncio.gather(read_task, write_task)
 
 
 if __name__ == '__main__':
