@@ -1,6 +1,5 @@
 import asyncio
 import aiofiles
-import threading
 from datetime import datetime
 
 async def write_output_line(input_line, file):
